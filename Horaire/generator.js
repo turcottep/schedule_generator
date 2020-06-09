@@ -31,7 +31,7 @@ function generateSchedule(input) {
 
     linkPhases(output.phases);
 
-    output.timeSlots = generateTimeSlots(input.startTime, 6, input.gameLength, input.pauseBetweenGames);
+    output.timeSlots = generateTimeSlots(input.startTime, input.endTime, timeIndex, input.gameLength, input.pauseBetweenGames);
 
     output.numberOfFields = generateFields(output.phases, input.numberOfFields, output.timeSlots.length);
 
@@ -41,7 +41,7 @@ function generateSchedule(input) {
     return output
 }
 
-function generateTimeSlots(startTime, nbRounds, length, pause) {
+function generateTimeSlots(startTime, maxEndTime, nbRounds, length, pause) {
     timeSlots = [];
     for (let i = 0; i < nbRounds; i++) {
         endTime = new Date(startTime.getTime());
@@ -49,6 +49,10 @@ function generateTimeSlots(startTime, nbRounds, length, pause) {
 
         timeSlots.push(new TimeSlot(new Date(startTime.getTime()), new Date(endTime.getTime())));
         startTime.setSeconds(endTime.getSeconds() + pause + length);
+
+        if (endTime > maxEndTime) {
+            throw("Game ends after max end time");
+        }
     }
     return timeSlots
 }
